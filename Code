@@ -1,0 +1,76 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import numpy as np
+
+# --- 1. Load the Dataset ---
+try:
+    df = pd.read_csv('C:/Users/SANJAY.K/OneDrive/Documents/skillcraft/dataset/cats_vs_dogs.csv')
+    print("Dataset loaded successfully.")
+except FileNotFoundError:
+    print("Error: 'cats_vs_dogs.csv' not found. Make sure the file is in the same directory.")
+    # Exit if the file isn't found
+    exit()
+
+# --- 2. Data Preparation ---
+
+# Inspect the first few rows and column information
+print("\n--- Dataset Info ---")
+print(df.head())
+print(df.columns)
+
+# The first column is unnamed and appears to be an index, so we drop it.
+# Based on the file snippet, the first column is unnamed (index 0).
+# The dog_cat_ratio is the second to last column, and 'label' is the last.
+df = df.iloc[:, 1:] # Drop the first unnamed index column
+print(df.columns) # Verify the remaining columns
+
+# Define features (X) and target (y)
+# Feature: 'dog_cat_ratio'
+X = df[['dog_cat_ratio']].values 
+# Target: 'label' ('dog' or 'cat')
+y = df['label'].values 
+
+# --- 3. Split Data into Training and Testing Sets ---
+# Use 80% for training and 20% for testing
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+print(f"\nTraining Samples: {len(X_train)}")
+print(f"Testing Samples: {len(X_test)}")
+
+
+# --- 4. Train the Logistic Regression Model ---
+model = LogisticRegression(random_state=42, solver='liblinear')
+model.fit(X_train, y_train)
+print("\nLogistic Regression model trained successfully.")
+
+# --- 5. Make Predictions ---
+y_pred = model.predict(X_test)
+
+# --- 6. Evaluate Model Performance ---
+print("\n--- Model Evaluation ---")
+
+# Accuracy Score
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.4f}")
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print("\nConfusion Matrix:")
+print(pd.DataFrame(cm, index=['Actual Cat', 'Actual Dog'], columns=['Predicted Cat', 'Predicted Dog']))
+
+# Classification Report
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# --- Interpretation of the dog_cat_ratio cutoff ---
+# Since Logistic Regression uses a threshold (usually 0.5 probability) for classification,
+# we can find the exact ratio that separates the two classes:
+# The formula is: X * coefficient + intercept = 0
+# X = -intercept / coefficient
+ratio_cutoff = -model.intercept_[0] / model.coef_[0][0]
+print(f"\n--- Model Insight ---")
+print(f"The model classifies as 'cat' if dog_cat_ratio < {ratio_cutoff:.4f}")
+print(f"The model classifies as 'dog' if dog_cat_ratio >= {ratio_cutoff:.4f}")
