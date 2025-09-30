@@ -1,0 +1,50 @@
+Dataset loaded successfully.
+
+--- Dataset Info ---
+   Unnamed: 0       state  n_households  ...  cat_population  dog_cat_ratio  label
+0         NaN     Alabama          1828  ...            1252       1.125299    dog
+1         NaN     Arizona          2515  ...            1438       1.249479    dog
+2         NaN    Arkansas          1148  ...             810       1.352651    dog
+3         NaN  California         12974  ...            7118       0.939317    cat
+4         NaN    Colorado          1986  ...            1191       1.131711    dog
+
+[5 rows x 15 columns]
+Index(['Unnamed: 0', 'state', 'n_households', 'percent_pet_households',
+       'n_pet_households', 'percent_dog_owners', 'n_dog_households',
+       'avg_dogs_per_household', 'dog_population', 'percent_cat_owners',
+       'n_cat_households', 'avg_cats_per_household', 'cat_population',
+       'dog_cat_ratio', 'label'],
+      dtype='object')
+Index(['state', 'n_households', 'percent_pet_households', 'n_pet_households',
+       'percent_dog_owners', 'n_dog_households', 'avg_dogs_per_household',
+       'dog_population', 'percent_cat_owners', 'n_cat_households',
+       'avg_cats_per_household', 'cat_population', 'dog_cat_ratio', 'label'],
+      dtype='object')
+
+Training Samples: 39
+Testing Samples: 10
+
+Logistic Regression model trained successfully.
+
+--- Model Evaluation ---
+Accuracy: 0.8000
+
+Confusion Matrix:
+            Predicted Cat  Predicted Dog
+Actual Cat              6              0
+Actual Dog              2              2
+
+Classification Report:
+              precision    recall  f1-score   support
+
+         cat       0.75      1.00      0.86         6
+         dog       1.00      0.50      0.67         4
+
+    accuracy                           0.80        10
+   macro avg       0.88      0.75      0.76        10
+weighted avg       0.85      0.80      0.78        10
+
+
+--- Model Insight ---
+The model classifies as 'cat' if dog_cat_ratio < 1.2101
+The model classifies as 'dog' if dog_cat_ratio >= 1.2101
